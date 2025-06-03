@@ -2,12 +2,12 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    Float,
     DateTime,
     ForeignKey,
     MetaData,
     Enum,
-    text
+    Numeric,
+    CheckConstraint
 )
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -40,7 +40,8 @@ class Product(Base):
     name = Column(String(255), nullable=False)
     sku = Column(String(100), unique=True, nullable=False)
     stock_quantity = Column(Integer, nullable=False)
-    price_per_unit = Column(Float, nullable=False)
+    price_per_unit = Column(Numeric(10, 2), nullable=False)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     order_items = relationship("OrderItem", backref="product", cascade="all, delete-orphan")
 
@@ -53,6 +54,9 @@ class Product(Base):
     def __str__(self):
         return f"{self.name} (SKU: {self.sku}) - ${self.price_per_unit:.2f} [{self.stock_quantity} in stock]"
 
+    def is_in_stock(self, quantity):
+        return self.stock_quantity >= quantity
+
 
 class Order(Base):
     __tablename__ = "orders"
@@ -61,6 +65,7 @@ class Order(Base):
     customer_name = Column(String(255), nullable=False)
     order_date = Column(DateTime, nullable=False, default=datetime.now)
     status = Column(Enum(*ORDER_STATUSES, name="order_status"), nullable=False, default="pending")
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     order_items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")
     shipment = relationship("Shipment", backref="order", uselist=False, cascade="all, delete-orphan")
@@ -74,6 +79,9 @@ class Order(Base):
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name} - {self.status}"
 
+    def total_amount(self):
+        return sum(item.unit_price * item.quantity for item in self.order_items)
+
 
 class OrderItem(Base):
     __tablename__ = "order_items"
@@ -81,8 +89,12 @@ class OrderItem(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
-    quantity = Column(Integer, nullable=False)
-    unit_price = Column(Float, nullable=False)
+    quantity = Column(Integer, nullable=False, default=1)
+    unit_price = Column(Numeric(10, 2), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint('quantity > 0', name='ck_order_items_quantity_positive'),
+    )
 
     def __repr__(self):
         return (
@@ -102,6 +114,7 @@ class Shipment(Base):
     order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
     shipped_date = Column(DateTime, default=None)
     delivery_status = Column(Enum(*DELIVERY_STATUSES, name="delivery_status"), nullable=False, default="not shipped")
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return (

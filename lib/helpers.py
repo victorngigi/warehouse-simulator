@@ -1,4 +1,4 @@
-from lib.models import Session, Product, Order
+from lib.models import Product, Order
 
 def print_products(session):
     """Print all products from the given session in a neat format."""
