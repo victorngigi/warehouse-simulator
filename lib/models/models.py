@@ -39,7 +39,7 @@ class Product(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False)
     sku = Column(String(100), unique=True, nullable=False)
-    stock_quantity = Column(Integer, nullable=False)
+    stock_quantity = Column(Integer, nullable=False, default=0)
     price_per_unit = Column(Float, nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -124,3 +124,9 @@ class Shipment(Base):
 
     def __str__(self):
         return f"Shipment #{self.id} - Order #{self.order_id} - {self.delivery_status}"
+
+    def mark_shipped(self):
+        self.shipped_date = datetime.now()
+        self.delivery_status = "in transit"
+    def mark_delivered(self):
+        self.delivery_status = "delivered"
