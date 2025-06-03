@@ -1,5 +1,3 @@
-# lib/models/models.py
-
 from sqlalchemy import (
     Column,
     Integer,
@@ -8,6 +6,8 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     MetaData,
+    Enum,
+    text
 )
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from sqlalchemy import create_engine
@@ -29,14 +29,17 @@ engine = create_engine(DATABASE_URL, echo=False)
 
 Session = sessionmaker(bind=engine)
 
+ORDER_STATUSES = ("pending", "fulfilled", "cancelled")
+DELIVERY_STATUSES = ("not shipped", "in transit", "delivered")
+
 
 class Product(Base):
     __tablename__ = "products"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False)
     sku = Column(String(100), unique=True, nullable=False)
-    stock_quantity = Column(Integer, nullable=False, default=0)
+    stock_quantity = Column(Integer, nullable=False)
     price_per_unit = Column(Float, nullable=False)
 
     order_items = relationship("OrderItem", backref="product", cascade="all, delete-orphan")
@@ -47,14 +50,17 @@ class Product(Base):
             f"sku='{self.sku}', stock={self.stock_quantity})>"
         )
 
+    def __str__(self):
+        return f"{self.name} (SKU: {self.sku}) - ${self.price_per_unit:.2f} [{self.stock_quantity} in stock]"
+
 
 class Order(Base):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False)
     customer_name = Column(String(255), nullable=False)
-    order_date = Column(DateTime, default=datetime.utcnow, nullable=False)
-    status = Column(String(50), nullable=False, default="pending")
+    order_date = Column(DateTime, nullable=False, default=datetime.now)
+    status = Column(Enum(*ORDER_STATUSES, name="order_status"), nullable=False, default="pending")
 
     order_items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")
     shipment = relationship("Shipment", backref="order", uselist=False, cascade="all, delete-orphan")
@@ -65,13 +71,16 @@ class Order(Base):
             f"status='{self.status}', date={self.order_date})>"
         )
 
+    def __str__(self):
+        return f"Order #{self.id} - {self.customer_name} - {self.status}"
+
 
 class OrderItem(Base):
     __tablename__ = "order_items"
 
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     quantity = Column(Integer, nullable=False)
     unit_price = Column(Float, nullable=False)
 
@@ -82,19 +91,23 @@ class OrderItem(Base):
             f"unit_price={self.unit_price})>"
         )
 
+    def __str__(self):
+        return f"{self.quantity} x Product #{self.product_id} @ ${self.unit_price:.2f}"
+
 
 class Shipment(Base):
     __tablename__ = "shipments"
 
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
     shipped_date = Column(DateTime, default=None)
-    delivery_status = Column(
-        String(50), nullable=False, default="not shipped"
-    )  
+    delivery_status = Column(Enum(*DELIVERY_STATUSES, name="delivery_status"), nullable=False, default="not shipped")
 
     def __repr__(self):
         return (
             f"<Shipment(id={self.id}, order_id={self.order_id}, "
             f"shipped_date={self.shipped_date}, status='{self.delivery_status}')>"
         )
+
+    def __str__(self):
+        return f"Shipment #{self.id} - Order #{self.order_id} - {self.delivery_status}"
