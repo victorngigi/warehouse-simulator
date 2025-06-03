@@ -50,6 +50,52 @@ def add_product():
     finally:
         session.close()
 
+def update_product():
+    session = Session()
+    list_products()
+    try:
+        pid = int(input("Enter Product ID to update: ").strip())
+    except ValueError:
+        print("Invalid ID.")
+        session.close()
+        return
+
+    product = session.query(Product).get(pid)
+    if not product:
+        print("Product not found.")
+        session.close()
+        return
+
+    print(f"Current name: {product.name}")
+    new_name = input("New name (leave blank to keep): ").strip()
+    if new_name:
+        product.name = new_name
+
+    print(f"Current price: {product.price_per_unit}")
+    try:
+        new_price = input("New price (leave blank to keep): ").strip()
+        if new_price:
+            product.price_per_unit = float(new_price)
+    except ValueError:
+        print("Invalid price input. Update canceled.")
+        session.close()
+        return
+
+    print(f"Current stock quantity: {product.stock_quantity}")
+    try:
+        new_stock = input("New stock quantity (leave blank to keep): ").strip()
+        if new_stock:
+            product.stock_quantity = int(new_stock)
+    except ValueError:
+        print("Invalid quantity input. Update canceled.")
+        session.close()
+        return
+
+    session.commit()
+    print(f"Product [{product.id}] updated.")
+    session.close()
+
+
 def delete_product():
     session = Session()
     list_products()
@@ -311,6 +357,7 @@ def menu():
     print("5. Fulfill Order (create shipment)")
     print("6. Track Shipments")
     print("7. Update Shipment Status")
+    
 
 
 def main():
