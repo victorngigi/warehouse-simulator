@@ -1,4 +1,4 @@
-import sqlite3
+# lib/models/__init__.py
 
-CONN = sqlite3.connect('company.db')
-CURSOR = CONN.cursor()
+from .models import Base, engine, Session
+from .models import Product, Order, OrderItem, Shipment
