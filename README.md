@@ -81,8 +81,13 @@ This project is a cli model implementation for managing products, orders, order 
    ```
    pip install -r requirements.txt
    ```
+   or
 
-4. Initialize the database:
+   ```
+   pipenv install
+   ```
+
+5. Initialize the database:
 
    ```
    python -m alembic upgrade head
