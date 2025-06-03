@@ -93,6 +93,7 @@ Here's a detailed look at the database schema:
 
 ## Folder Structure
 
+```
 warehouse-simulator
 ├── Pipfile
 ├── Pipfile.lock
@@ -112,6 +113,7 @@ warehouse-simulator
 │   ├── env.py
 │   └── script.py.mako
 └── requirements.txt
+```
 
 ## Setup Instructions
 
