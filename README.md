@@ -59,6 +59,60 @@ This project is a cli model implementation for managing products, orders, order 
 
 ---
 
+## Database Schema
+
+Here's a detailed look at the database schema:
+
+| Table        | Column          | Type         | Constraints                   |
+|--------------|-----------------|--------------|-------------------------------|
+| `products`   | `id`            | `INTEGER`    | `PRIMARY KEY`, `NOT NULL`     |
+|              | `name`          | `VARCHAR(255)`| `NOT NULL`                    |
+|              | `sku`           | `VARCHAR(100)`| `UNIQUE`, `NOT NULL`          |
+|              | `stock_quantity`| `INTEGER`    | `NOT NULL`                    |
+|              | `price_per_unit`| `FLOAT`      | `NOT NULL`                    |
+| `orders`     | `id`            | `INTEGER`    | `PRIMARY KEY`, `NOT NULL`     |
+|              | `customer_name` | `VARCHAR(255)`| `NOT NULL`                    |
+|              | `order_date`    | `DATETIME`   | `NOT NULL`                    |
+|              | `status`        | `VARCHAR(50)`| `NOT NULL`                    |
+| `order_items`| `id`            | `INTEGER`    | `PRIMARY KEY`, `NOT NULL`     |
+|              | `order_id`      | `INTEGER`    | `NOT NULL`, `FOREIGN KEY` (`orders.id`)|
+|              | `product_id`    | `INTEGER`    | `NOT NULL`, `FOREIGN KEY` (`products.id`)|
+|              | `quantity`      | `INTEGER`    | `NOT NULL`                    |
+|              | `unit_price`    | `FLOAT`      | `NOT NULL`                    |
+| `shipments`  | `id`            | `INTEGER`    | `PRIMARY KEY`, `NOT NULL`     |
+|              | `order_id`      | `INTEGER`    | `NOT NULL`, `FOREIGN KEY` (`orders.id`)|
+|              | `shipped_date`  | `DATETIME`   |                               |
+|              | `delivery_status`| `VARCHAR(50)`| `NOT NULL`                    |
+
+**Relationships:**
+- `order_items.order_id` relates to `orders.id` (Many-to-One)
+- `order_items.product_id` relates to `products.id` (Many-to-One)
+- `shipments.order_id` relates to `orders.id` (One-to-One)
+
+---
+
+## Folder Structure
+
+warehouse-simulator
+├── Pipfile
+├── Pipfile.lock
+├── README.md
+├── alembic.ini
+├── db
+│   └── warehouse.db
+├── lib
+│   ├── cli.py
+│   ├── debug.py
+│   ├── helpers.py
+│   └── models
+│       ├── init.py
+│       └── models.py
+├── migrations
+│   ├── README
+│   ├── env.py
+│   └── script.py.mako
+└── requirements.txt
+
 ## Setup Instructions
 
 1. Clone the repository:
