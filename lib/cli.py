@@ -357,6 +357,12 @@ def menu():
     print("5. Fulfill Order (create shipment)")
     print("6. Track Shipments")
     print("7. Update Shipment Status")
+    print("8. Update Product")
+    print("9. Delete Product")
+    print("10. Update Order")
+    print("11. Delete Order")
+    print("12. Delete Shipment")
+
     
 
 
