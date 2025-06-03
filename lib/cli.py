@@ -13,7 +13,7 @@ def list_products():
         else:
             for p in products:
                 print(f"  [{p.id}] {p.name} (SKU: {p.sku}) – "
-                      f"Stock: {p.stock_quantity}, Price: ${p.price_per_unit:.2f}")
+                      f"Stock: {p.stock_quantity}, Price: KSH-{p.price_per_unit:.2f}")
             print("")
     finally:
         session.close()
@@ -380,63 +380,70 @@ def delete_shipment():
 
 
 
+def go_back_or_exit():
+    while True:
+        print("\n🔁 Press [M] to return to the main menu or [E] to exit.")
+        choice = input("> ").strip().lower()
+        if choice == "m":
+            return
+        elif choice == "e":
+            exit_program()
+        else:
+            print("❌ Invalid choice. Please enter 'M' or 'E'.")
+
 def exit_program():
-    print("Goodbye!")
+    print("\n👋 Goodbye! Thanks for using the Warehouse Simulator!")
     sys.exit()
 
-
 def menu():
-    print("\n=== Warehouse Simulator ===")
-    print("0. Exit")
-    print("1. List Products")
-    print("2. Add Product")
-    print("3. Create Order")
-    print("4. List Orders")
-    print("5. Fulfill Order (create shipment)")
-    print("6. Track Shipments")
-    print("7. Update Shipment Status")
-    print("8. Update Product")
-    print("9. Delete Product")
-    print("10. Update Order")
-    print("11. Delete Order")
-    print("12. Delete Shipment")
+    print("""
 
-    
+🧱  Welcome to the 🏭 Warehouse Simulator 3000!
+==============================================
+📦 Manage Products, Orders, and Shipments with ease!
 
+Please choose an option:
+ [0]  Exit
+ [1]  📋 List Products
+ [2]  ➕ Add Product
+ [3]  🛒 Create Order
+ [4]  📦 List Orders
+ [5]  ✅ Fulfill Order
+ [6]  🚚 Track Shipments
+ [7]  🔧 Update Shipment Status
+ [8]  ✏️ Update Product
+ [9]  ❌ Delete Product
+ [10]  ✏️ Update Order
+ [11]  ❌ Delete Order
+ [12]  ❌ Delete Shipment
+""")
 
 def main():
+    actions = {
+        "0": exit_program,
+        "1": list_products,
+        "2": add_product,
+        "3": create_order,
+        "4": list_orders,
+        "5": fulfill_order,
+        "6": track_shipments,
+        "7": update_shipment,
+        "8": update_product,
+        "9": delete_product,
+        "10": update_order,
+        "11": delete_order,
+        "12": delete_shipment,
+    }
+
     while True:
         menu()
-        choice = input("> ").strip()
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            list_products()
-        elif choice == "2":
-            add_product()
-        elif choice == "3":
-            create_order()
-        elif choice == "4":
-            list_orders()
-        elif choice == "5":
-            fulfill_order()
-        elif choice == "6":
-            track_shipments()
-        elif choice == "7":
-            update_shipment()
-        elif choice == "8":
-            update_product()
-        elif choice == "9":
-            delete_product()
-        elif choice == "10":
-            update_order()
-        elif choice == "11":
-            delete_order()
-        elif choice == "12":
-            delete_shipment()
-
+        choice = input("👉 Enter your choice: ").strip()
+        action = actions.get(choice)
+        if action:
+            action()
+            go_back_or_exit()
         else:
-            print("Invalid choice.")
+            print("❌ Invalid option! Please choose a number from the menu.")
 
 
 if __name__ == "__main__":

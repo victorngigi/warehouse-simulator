@@ -52,7 +52,7 @@ class Product(Base):
         )
 
     def __str__(self):
-        return f"{self.name} (SKU: {self.sku}) - ${self.price_per_unit:.2f} [{self.stock_quantity} in stock]"
+        return f"{self.name} (SKU: {self.sku}) - KSH-{self.price_per_unit:.2f} [{self.stock_quantity} in stock]"
 
     def is_in_stock(self, quantity):
         return self.stock_quantity >= quantity
@@ -104,7 +104,7 @@ class OrderItem(Base):
         )
 
     def __str__(self):
-        return f"{self.quantity} x Product #{self.product_id} @ ${self.unit_price:.2f}"
+        return f"{self.quantity} x Product #{self.product_id} @ KSH-{self.unit_price:.2f}"
 
 
 class Shipment(Base):

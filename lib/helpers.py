@@ -9,7 +9,7 @@ def print_products(session):
 
     print("\n--- Product Inventory ---")
     for p in products:
-        print(f"  [{p.id}] {p.name} (SKU: {p.sku}) - Stock: {p.stock_quantity}, Price: ${p.price_per_unit:.2f}")
+        print(f"  [{p.id}] {p.name} (SKU: {p.sku}) - Stock: {p.stock_quantity}, Price: KSH-{p.price_per_unit:.2f}")
 
 def print_orders(session):
     """Print all orders from the given session in a neat format."""
