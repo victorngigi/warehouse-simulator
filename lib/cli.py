@@ -238,6 +238,31 @@ def update_order():
     print(f"Order [{order.id}] updated.")
     session.close()
 
+def delete_order():
+    session = Session()
+    list_orders()
+    try:
+        oid = int(input("Enter Order ID to delete: ").strip())
+    except ValueError:
+        print("Invalid ID.")
+        session.close()
+        return
+
+    order = session.query(Order).get(oid)
+    if not order:
+        print("Order not found.")
+        session.close()
+        return
+
+    confirm = input(f"Are you sure you want to delete order #{order.id} and all its items? (y/n): ").strip().lower()
+    if confirm == "y":
+        session.delete(order)
+        session.commit()
+        print("Order and related items deleted.")
+    else:
+        print("Delete canceled.")
+
+    session.close()
 
 
 def fulfill_order():
@@ -386,6 +411,17 @@ def main():
             track_shipments()
         elif choice == "7":
             update_shipment()
+        elif choice == "8":
+            update_product()
+        elif choice == "9":
+            delete_product()
+        elif choice == "10":
+            update_order()
+        elif choice == "11":
+            delete_order()
+        elif choice == "12":
+            delete_shipment()
+
         else:
             print("Invalid choice.")
 
