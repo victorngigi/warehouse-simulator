@@ -162,6 +162,35 @@ def list_orders():
     finally:
         session.close()
 
+def update_order():
+    session = Session()
+    list_orders()
+    try:
+        oid = int(input("Enter Order ID to update: ").strip())
+    except ValueError:
+        print("Invalid ID.")
+        session.close()
+        return
+
+    order = session.query(Order).get(oid)
+    if not order:
+        print("Order not found.")
+        session.close()
+        return
+
+    print(f"Current customer name: {order.customer_name}")
+    new_customer = input("New customer name (leave blank to keep): ").strip()
+    if new_customer:
+        order.customer_name = new_customer
+
+    print(f"Current status: {order.status}")
+    new_status = input("New status (leave blank to keep): ").strip()
+    if new_status:
+        order.status = new_status
+
+    session.commit()
+    print(f"Order [{order.id}] updated.")
+    session.close()
 
 
 
