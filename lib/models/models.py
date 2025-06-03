@@ -6,7 +6,7 @@ from sqlalchemy import (
     ForeignKey,
     MetaData,
     Enum,
-    Numeric,
+    Float,
     CheckConstraint
 )
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
@@ -40,7 +40,7 @@ class Product(Base):
     name = Column(String(255), nullable=False)
     sku = Column(String(100), unique=True, nullable=False)
     stock_quantity = Column(Integer, nullable=False)
-    price_per_unit = Column(Numeric(10, 2), nullable=False)
+    price_per_unit = Column(Float, nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     order_items = relationship("OrderItem", backref="product", cascade="all, delete-orphan")
@@ -90,7 +90,7 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     quantity = Column(Integer, nullable=False, default=1)
-    unit_price = Column(Numeric(10, 2), nullable=False)
+    unit_price = Column(Float, nullable=False)
 
     __table_args__ = (
         CheckConstraint('quantity > 0', name='ck_order_items_quantity_positive'),
