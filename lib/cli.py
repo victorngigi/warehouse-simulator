@@ -50,6 +50,39 @@ def add_product():
     finally:
         session.close()
 
+def delete_product():
+    session = Session()
+    list_products()
+    try:
+        pid = int(input("Enter Product ID to delete: ").strip())
+    except ValueError:
+        print("Invalid ID.")
+        session.close()
+        return
+
+    product = session.query(Product).get(pid)
+    if not product:
+        print("Product not found.")
+        session.close()
+        return
+
+    # Check if product is in any pending orders
+    linked_items = session.query(OrderItem).filter_by(product_id=pid).count()
+    if linked_items > 0:
+        print("Cannot delete product: It is linked to existing order items.")
+        session.close()
+        return
+
+    confirm = input(f"Are you sure you want to delete product '{product.name}'? (y/n): ").strip().lower()
+    if confirm == "y":
+        session.delete(product)
+        session.commit()
+        print("Product deleted.")
+    else:
+        print("Delete canceled.")
+
+    session.close()
+
 
 def create_order():
     session = Session()
@@ -128,6 +161,8 @@ def list_orders():
             print("")
     finally:
         session.close()
+
+
 
 
 def fulfill_order():
