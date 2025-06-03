@@ -22,7 +22,7 @@ This project is a cli model implementation for managing products, orders, order 
 - Python 3.x
 - SQLAlchemy ORM
 - SQLite database
-- datetime module for timestamps
+- Alembic for migrations
 
 ---
 
@@ -59,30 +59,52 @@ This project is a cli model implementation for managing products, orders, order 
 
 ---
 
+## Setup Instructions
+
+1. Clone the repository:
+
+   ```
+   git clone <your-repository-url>
+   cd <your-repository-folder>
+   ```
+
+2. Create a virtual environment and activate it:
+
+   ```
+   python -m venv venv
+   source venv/bin/activate    # On Linux/macOS
+   .\venv\Scripts\activate     # On Windows
+   ```
+
+3. Install dependencies:
+
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. Initialize the database:
+
+   ```
+   python -m alembic upgrade head
+   ```
+
 ## Usage
 
-1. Create a SQLAlchemy engine and session:
+1. Activate your virtual environment (venv):
 
-```python
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+   ```
+   source venv/bin/activate    # On Linux/macOS
+   .\venv\Scripts\activate     # On Windows
+   ```
 
-engine = create_engine("sqlite:///db/warehouse.db")
-Session = sessionmaker(bind=engine)
-session = Session()
-```
+2. Run the application from the project root using the module syntax:
 
-2. Create tables (run once):
+   ```
+   python -m lib.cli
+   ```
 
-```python
-Base.metadata.create_all(engine)
-```
+3. Follow the CLI prompts to interact with the warehouse inventory and order fulfillment system.
 
-3. Perform CRUD operations using session:  
-   - Add products, create orders with order items, and track shipments.  
-   - Use model methods like `product.is_in_stock(quantity)` and `order.total_amount()` for business logic.
-
----
 
 ## Naming Conventions
 
