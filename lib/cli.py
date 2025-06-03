@@ -268,6 +268,33 @@ def update_shipment():
     finally:
         session.close()
 
+def delete_shipment():
+    session = Session()
+    track_shipments()
+    try:
+        sid = int(input("Enter Shipment ID to delete: ").strip())
+    except ValueError:
+        print("Invalid ID.")
+        session.close()
+        return
+
+    shipment = session.query(Shipment).get(sid)
+    if not shipment:
+        print("Shipment not found.")
+        session.close()
+        return
+
+    confirm = input(f"Are you sure you want to delete shipment #{shipment.id}? (y/n): ").strip().lower()
+    if confirm == "y":
+        session.delete(shipment)
+        session.commit()
+        print("Shipment deleted.")
+    else:
+        print("Delete canceled.")
+
+    session.close()
+
+
 
 def exit_program():
     print("Goodbye!")
