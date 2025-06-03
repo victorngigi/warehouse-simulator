@@ -261,8 +261,21 @@ def delete_order():
         print("Order and related items deleted.")
     else:
         print("Delete canceled.")
-
-    session.close()
+        session.close()
+        return
+    try:
+        for item in order.items:
+            product = item.product
+            product.stock_quantity += item.quantity
+        
+        session.delete(order)
+        session.commit()
+        print(f"Order #{order.id} deleted successfully.")
+    except Exception as e:
+        session.rollback()
+        print(f"Error deleting order: {e}")
+    finally:
+        session.close()
 
 
 def fulfill_order():
