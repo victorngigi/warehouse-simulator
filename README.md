@@ -114,6 +114,13 @@ warehouse-simulator
 │   └── script.py.mako
 └── requirements.txt
 ```
+## Getting Started
+Prerequisites
+   - **Python 3.8+** installed on your system.
+   - `pipenv` for dependency management (highly recommended). If you don't have it, install it globally:
+   ```Bash
+   pip install pipenv
+   ```
 
 ## Setup Instructions
 
@@ -136,7 +143,13 @@ warehouse-simulator
    ```Bash
    python -m alembic upgrade head
    ```
-   
+
+4. Populate Database with Sample Data (Optional, but recommended for testing):
+   To quickly get started with pre-filled products, orders, and shipments for development and testing, run the seeding script:
+   ```Bash
+   pipenv run python seed.py
+   ```
+   _**Important:** This script will clear all existing data from your database before adding new sample data. Use with caution on a database you wish to preserve._
 
 ## Usage
 
