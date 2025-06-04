@@ -145,7 +145,7 @@ warehouse-simulator
    ```Bash
    pipenv run python -m lib.cli
    ```
-   _This command executes python -m lib.cli directly within the project's virtual environment managed by Pipenv, without needing to manually activate it._
+   _This command executes ```python -m lib.cli``` directly within the project's virtual environment managed by Pipenv, without needing to manually activate it._
 
 2. If you want to enter the virtual environment's shell to run multiple commands or for development:
 
