@@ -93,7 +93,7 @@ Here's a detailed look at the database schema:
 
 ## Folder Structure
 
-```
+```Bash
 warehouse-simulator
 ├── Pipfile
 ├── Pipfile.lock
@@ -119,51 +119,40 @@ warehouse-simulator
 
 1. Clone the repository:
 
-   ```
+   ```Bash
    git clone <your-repository-url>
    cd <your-repository-folder>
    ```
 
-2. Create a virtual environment and activate it:
+2. Install dependencies and create the virtual environment (if it doesn't exist):
 
-   ```
-   python -m venv venv
-   source venv/bin/activate    # On Linux/macOS
-   .\venv\Scripts\activate     # On Windows
-   ```
-
-3. Install dependencies:
-
-   ```
-   pip install -r requirements.txt
-   ```
-   or
-
-   ```
+   ```Bash
    pipenv install
    ```
+   _This command will automatically create a virtual environment for your project (if one doesn't already exist), install the dependencies listed in your Pipfile, and synchronize them with Pipfile.lock._
 
-5. Initialize the database:
+3. Initialize the database:
 
-   ```
+   ```Bash
    python -m alembic upgrade head
    ```
+   
 
 ## Usage
 
-1. Activate your virtual environment (venv):
+1. Run the application using Pipenv:
 
+   ```Bash
+   pipenv run python -m lib.cli
    ```
-   source venv/bin/activate    # On Linux/macOS
-   .\venv\Scripts\activate     # On Windows
-   ```
+   _This command executes python -m lib.cli directly within the project's virtual environment managed by Pipenv, without needing to manually activate it._
 
-2. Run the application from the project root using the module syntax:
+2. If you want to enter the virtual environment's shell to run multiple commands or for development:
 
+   ```Bash
+   pipenv shell
    ```
-   python -m lib.cli
-   ```
-
+ _Once inside, your shell prompt will change, indicating the virtual environment is active. You can then run commands like ```python -m lib.cli``` or ```alembic upgrade head``` directly without ```pipenv run```_
 3. Follow the CLI prompts to interact with the warehouse inventory and order fulfillment system.
 
 
