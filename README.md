@@ -141,13 +141,13 @@ Prerequisites
 3. Initialize the database:
 
    ```Bash
-   python -m alembic upgrade head
+   pipenv run alembic upgrade head
    ```
 
 4. Populate Database with Sample Data (Optional, but recommended for testing):
    To quickly get started with pre-filled products, orders, and shipments for development and testing, run the seeding script:
    ```Bash
-   pipenv run python seed.py
+   pipenv run python -m lib.seed
    ```
    _**Important:** This script will clear all existing data from your database before adding new sample data. Use with caution on a database you wish to preserve._
 
